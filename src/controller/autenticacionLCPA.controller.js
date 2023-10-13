@@ -1,11 +1,16 @@
-import pool from "../database/database.js";
+import { pool } from "../database/database.js";
 import Jwt  from "jsonwebtoken";
 
 export const Validator= async(req,res)=>{
     try {
         let info = req.body;
-        let sql ="select identificacion,nombres from clientes where identificacion: ? , password: ?";
-        const[rows]=await pool.query(sql,[info.identificacion,info.contrasena]);
+        
+        let sql ="SELECT identificacion, nombres FROM clientes WHERE identificacion = ? AND password = ?";
+        console.log(info.identificacion)
+        console.log(info.contrasena)
+        const[rows]=await pool.query(sql,[info.identificacion, info.contrasena]);
+
+        
         if (rows.legth>0) {
             let token=jws.sign({user:rows}, process.env.AUT_SECRET,{expires:process.env.AUT_EXPIRE});
             return res.status(200).json({TOKEN:token,message:"usuario Autorizado"});
