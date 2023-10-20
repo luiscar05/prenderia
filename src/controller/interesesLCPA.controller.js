@@ -2,8 +2,8 @@ import { pool } from "../database/database.js";
 export const registrarIntereses = async (req,res)=>{
     try {
         let info= req.body
-    let sql="insert into intereses (mes,fecha,valor,alquiler) values (month(), now(), ? , ?)"
-    const [rows]=await pool.query(sql,[info.valor,info.alquiler])
+    let sql="insert into intereses (mes,fecha,valor,alquiler) values (?, now(), ? , ?)"
+    const [rows]=await pool.query(sql,[info.mes,info.valor,info.alquiler])
     if (rows.affectedRows) {
        return res.status(200).json({message:"Interes registrado exitosamente"}) 
     } else {
@@ -17,10 +17,10 @@ export const actualizarIntereses = async(req,res)=>{
     try {
         let info= req.body
         let id = req.params.iden
-        let sql="update alquiler set valor = ? , alquiler = ? where idinteres = ?"
-        const [rows]=await pool.query(sql,[info.valor,info.alquiler,id])
+        let sql="update intereses set mes = ?, valor = ? , alquiler = ? where idinteres = ?"
+        const [rows]=await pool.query(sql,[info.mes,info.valor,info.alquiler,id])
         if (rows.affectedRows) {
-        return res.status(200).json({message:"Interes registrado exitosamente"}, rows) 
+        return res.status(200).json({message:"Interes registrado exitosamente"}) 
         } else {
             return res.status(200).json({message:"No se registro el interes"})       
         }
@@ -58,7 +58,7 @@ export const buscarInterese = async (req,res)=>{
 export const eliminarIntereses = async(req,res)=>{
     try {
         let id= req.params.iden
-        let sql = "delete from interese where idintere = ?";
+        let sql = "delete from intereses where idinteres = ?";
         const [rows]=await pool.query(sql,[id]);
         if (rows.affectedRows) {
             return res.status(200).json({message:"Interese Eliminado Exitosamente"})

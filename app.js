@@ -19,7 +19,7 @@ app.use("/",validatorRouter.validadorRouterLCPA)
 app.use("/api/clientes",clienteLCPArouter)
 app.use("/api/articulo",ArticulosRouter);
 app.use("/api/alquiler",alquilerRouter);
-app.use("/api/interese",InteresesRouter)
+app.use("/api/intereses",InteresesRouter)
 
 
 app.listen(5000,()=>{
