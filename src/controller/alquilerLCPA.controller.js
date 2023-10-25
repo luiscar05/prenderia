@@ -3,11 +3,12 @@ export const registroAlquiler = async (req,res)=>{
     try {
         
             let info = req.body;
-        
-            let busqueda = "SELECT * FROM articulos WHERE idarticulo=? AND estado = 1";
+            
+            let busqueda = "SELECT * FROM articulos WHERE id=? AND estado = 1";
             const [permiso] = await pool.query(busqueda, [info.articulo]);
         
             if (permiso.length > 0) {
+                parseFloat(info.interes);
                 let sql = "INSERT INTO alquiler (valor, fecha, meses, descripcion, interes, cliente, articulo) VALUES (?, NOW(), ?, ?, ?, ?, ?)";
                 const [rows] = await pool.query(sql, [info.valor, info.meses, info.descripcion, info.interes, info.cliente, info.articulo]);
         

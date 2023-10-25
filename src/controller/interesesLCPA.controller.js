@@ -2,13 +2,36 @@ import { pool } from "../database/database.js";
 export const registrarIntereses = async (req,res)=>{
     try {
         let info= req.body
-    let sql="insert into intereses (mes,fecha,valor,alquiler) values (?, now(), ? , ?)"
-    const [rows]=await pool.query(sql,[info.mes,info.valor,info.alquiler])
-    if (rows.affectedRows) {
-       return res.status(200).json({message:"Interes registrado exitosamente"}) 
-    } else {
-        return res.status(200).json({message:"No se registro el interes"})       
-    }
+        
+        //conocer el mes el mes de pago de cada interes
+        const [mesResult] = await pool.query('SELECT mes FROM intereses WHERE alquiler = ?', [info.id]);
+        let meses = mesResult[0].mes     + 1; // Incrementar 'meses' en 1
+        // conocer todos los datos del alquiler
+        let sql="select * from alquiler where id = ? ";
+        const[alquiler]= await pool.query(sql,[info.id])
+        if (alquiler.length>0) {
+            let interes = "select * from intereses where id = ?";
+            const[interesData]=await pool.query(interes,info.id);
+            if (interesData[0].mes == alquiler[0].meses) {
+                return res.status(400).json({message:"El alticulo ya no tiene cuentas pendientes"})
+            }else{
+                //proceso para insertar datos de interes donde solo con el id del alquiler realizo el proceso
+                let intereses=alquiler[0].interes;
+                let valor= alquiler[0].valor;
+                let interesSimple=(valor*intereses)*alquiler[0].meses 
+                let total=(valor+interesSimple)/alquiler[0].meses
+                let insetInteres='INSERT INTO intereses (mes, fecha, valor, alquiler) VALUES (?, CURRENT_DATE(), ?, ?)';
+                const[interes]= await pool.query(insetInteres,[meses,total,info.id]);
+                if (interes.affectedRows) {
+                    // proceso para conocer el ultimo dato registrado segun id y comprara si aun puedo pagar o ya no 
+                    console.log("Registrado exitosamente");
+                }else{
+                    console.log("No se registró exitosamente"); 
+                }  
+            }
+        }else{
+            return res .status(400).json({message:"No se encuenta el alquiler"+ alquiler.id})
+        }
     } catch (error) {
         return res.status(500).json({message:`error en el sistema ${error}`})
     }
