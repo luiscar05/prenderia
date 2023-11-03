@@ -4,7 +4,7 @@ export const registroAlquiler = async (req,res)=>{
         
             let info = req.body;
             
-            let busqueda = "SELECT * FROM articulos WHERE id=? AND estado = 1";
+            let busqueda = "SELECT * FROM articulos WHERE idarticulo=? AND estado = 1";
             const [permiso] = await pool.query(busqueda, [info.articulo]);
         
             if (permiso.length > 0) {
