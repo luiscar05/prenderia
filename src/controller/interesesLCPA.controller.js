@@ -1,14 +1,15 @@
 import { pool } from "../database/database.js";
 export const registrarIntereses = async (req,res)=>{
     try {
-        let info= req.body
-    let sql="insert into intereses (mes,fecha,valor,alquiler) values (?, now(), ? , ?)"
-    const [rows]=await pool.query(sql,[info.mes,info.valor,info.alquiler])
-    if (rows.affectedRows) {
-       return res.status(200).json({message:"Interes registrado exitosamente"}) 
-    } else {
-        return res.status(200).json({message:"No se registro el interes"})       
+    let id = req.body
+    let sql="select * from alquiler where idalquiler= ? ";
+    const[ResAlquiler]=await pool.query(sql,[id]);
+    if (ResAlquiler.length>0) {
+        return ResAlquiler
+    }else{
+        return res.status(400).json({message:"no exite el alquiler"})
     }
+    
     } catch (error) {
         return res.status(500).json({message:`error en el sistema ${error}`})
     }
