@@ -5,6 +5,7 @@ import clienteLCPArouter from "./src/routers/clientesLCPA.router.js";
 import ArticulosRouter from "./src/routers/articulosLCPA.router.js";
 import alquilerRouter from "./src/routers/alquilerLCPA.router.js";
 import InteresesRouter from "./src/routers/interesesLCPA.router.js";
+import PagosInteresUserRouter from "./src/routers/pagoInteLCPA.router.js"
 
 const app = express();
 
@@ -20,8 +21,9 @@ app.use("/api/clientes",clienteLCPArouter)
 app.use("/api/articulo",ArticulosRouter);
 app.use("/api/alquiler",alquilerRouter);
 app.use("/api/intereses",InteresesRouter)
+app.use("/api",PagosInteresUserRouter)
 
-
-app.listen(5000,()=>{
-    console.log("Servidor ejecutandose ne el puerto 5000");
+let port=5000
+app.listen(port,()=>{
+    console.log(`Servidor ejecutandose en http://localhost:${port}`);
 })
